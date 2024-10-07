@@ -56,7 +56,7 @@ class EditorialController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('editorial.edit', ['editorial' => Editorial::findOrFail($id)]);
     }
 
     /**
@@ -64,7 +64,19 @@ class EditorialController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $this->validate($request, [
+            'nombre' => 'required|min:5|max:100',
+            'domicilio' => 'required|min:5|max:100',
+            'correo' => 'required|email',
+        ]);
+
+        $editorial = Editorial::findOrFail($id);
+        $editorial->nombre = $request->nombre;
+        $editorial->domicilio = $request->domicilio;
+        $editorial->correo = $request->correo;
+        $editorial->save();
+
+        return redirect()->route('editoriales.index')->with('message', 'Editorial actualizada con éxito');
     }
 
     /**
