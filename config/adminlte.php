@@ -322,6 +322,20 @@ return [
             'label' => 4,
             'label_color' => 'success',
         ],
+        [
+            'text' => 'Editoriales',
+            'icon' => 'fas fa-fw fa-user',
+            'submenu' => [
+                [
+                    'text' => 'Listar',
+                    'route' => 'editoriales.index',
+                ],
+                [
+                    'text' => 'Crear',
+                    'route' => 'editoriales.create',
+                ],
+            ],
+        ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',

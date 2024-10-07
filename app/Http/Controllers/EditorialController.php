@@ -12,7 +12,8 @@ class EditorialController extends Controller
      */
     public function index()
     {
-        //
+        $editoriales = Editorial::where('estatus', 1)->get();
+        return view('editorial.index', ['editoriales' => $this->cargarDT($editoriales)]);
     }
 
     /**
@@ -85,5 +86,51 @@ class EditorialController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Eliminar una editorial.
+     */
+    public function deleteEditorial($editorial_id)
+    {
+        $editorial = Editorial::find($editorial_id);
+        if ($editorial) {
+            $editorial->estatus = 0;
+            $editorial->update();
+            return redirect()->route('editoriales.index')->with("message", "La editorial se ha eliminado correctamente");
+        } else {
+            return redirect()->route('editoriales.index')->with("message", "La editorial que trata de eliminar no existe");
+        }
+    }
+
+    /**
+     * Cargar datos en formato DataTables.
+     */
+    private function cargarDT($consulta)
+    {
+        $editoriales = [];
+        foreach ($consulta as $key => $value) {
+            $actualizar = route('editoriales.edit', $value['id']);
+            $acciones = '
+           <div class="btn-acciones">
+               <div class="btn-circle">
+                   <a href="' . $actualizar . '" role="button" class="btn btn-success" title="Actualizar">
+                       <i class="far fa-edit"></i>
+                   </a>
+                    <a role="button" class="btn btn-danger" onclick="modal(' . $value['id'] . ')" data-bs-toggle="modal" data-bs-target="#exampleModal"">
+                       <i class="far fa-trash-alt"></i>
+                   </a>
+               </div>
+           </div>';
+
+            $editoriales[$key] = array(
+                $acciones,
+                $value['id'],
+                $value['correo'],
+                $value['nombre'],
+                $value['domicilio'],
+            );
+        }
+        return $editoriales;
     }
 }
